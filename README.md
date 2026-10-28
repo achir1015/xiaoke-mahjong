@@ -1,6 +1,12 @@
 # 小柯機器人台灣麻將遊戲
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/64522596-ed0c-40a6-bc2e-21c7b442a543" />
-媒體示範
+桌面版媒體示範
+
+https://github.com/user-attachments/assets/92e0065e-6c71-4149-ba65-12427e23d527
+
+手機版媒體示範
+
+https://github.com/user-attachments/assets/4b401f23-62e6-485f-96aa-2292af8e7eac
 
 
 
