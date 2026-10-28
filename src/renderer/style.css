@@ -333,7 +333,7 @@ body:not(.mode-net) .net-only { display: none; }
 .gd-item.on { border-color: var(--gold); background: #2e5a40; color: var(--gold); }
 .gd-item.practice { border-color: #35c46b; }
 .gd-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); gap: 16px; min-height: 0; }
-.gd-stage { display: flex; flex-direction: column; gap: 16px; justify-content: center; align-items: flex-start; padding: 18px 22px; background: radial-gradient(circle at 50% 40%, #1f7a4f, #0f4a30); border-radius: 18px; border: 6px solid #6b3f1f; box-shadow: inset 0 0 40px rgba(0,0,0,.45); overflow: auto; }
+.gd-stage { --tw: 46px; display: flex; flex-direction: column; gap: 16px; justify-content: center; align-items: flex-start; padding: 18px 22px; background: radial-gradient(circle at 50% 40%, #1f7a4f, #0f4a30); border-radius: 18px; border: 6px solid #6b3f1f; box-shadow: inset 0 0 40px rgba(0,0,0,.45); overflow: auto; }
 .gd-side { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 .gd-caption { min-height: 160px; white-space: pre-line; font-size: 19px; line-height: 1.65; padding: 12px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
 .gd-caption.speaking { border-color: var(--gold); box-shadow: 0 0 14px rgba(232,192,96,.35); }
@@ -344,8 +344,9 @@ body:not(.mode-net) .net-only { display: none; }
 .gd-row { display: flex; flex-direction: column; gap: 6px; animation: rowIn .45s ease backwards; }
 .gd-label { color: #fff3cf; font-weight: 700; font-size: 16px; text-shadow: 0 2px 6px rgba(0,0,0,.5); }
 .gd-tilewrap { position: relative; padding-bottom: 26px; }
-.gd-tiles { display: flex; gap: 3px; flex-wrap: wrap; }
-.gd-tile { width: 46px; height: 62px; border-radius: 6px; background: linear-gradient(#fbf7ec, #ece4cf); box-shadow: 0 5px 0 #0f7a45, 0 7px 10px rgba(0,0,0,.45); animation: tileIn .4s ease backwards; transition: transform .15s; }
+.gd-tiles { display: flex; gap: 3px; flex-wrap: nowrap; }
+.gd-tiles.pick { flex-wrap: wrap; }
+.gd-tile { width: var(--tw, 46px); height: calc(var(--tw, 46px) * 1.35); flex: none; border-radius: 6px; background: linear-gradient(#fbf7ec, #ece4cf); box-shadow: 0 5px 0 #0f7a45, 0 7px 10px rgba(0,0,0,.45); animation: tileIn .4s ease backwards; transition: transform .15s; }
 .gd-tile img { width: 100%; height: 100%; display: block; }
 .gd-tile.back { background: linear-gradient(#1a9a5a, #0f7a45); }
 .gd-tile.hl { animation: tileIn .4s ease backwards, pulse 1.2s ease-in-out .6s infinite; outline: 3px solid #ffd24a; }
@@ -353,7 +354,7 @@ body:not(.mode-net) .net-only { display: none; }
 .gd-tile.fly { animation: fly .9s ease backwards; }
 .gd-tiles.pick .gd-tile { cursor: pointer; }
 .gd-tiles.pick .gd-tile:hover { transform: translateY(-6px); }
-.gd-group { position: absolute; top: -4px; left: calc(var(--gs) * 49px - 2px); width: calc(var(--gn) * 49px - 2px); height: 74px; border: 3px solid var(--gc); border-radius: 9px; animation: groupIn .4s ease backwards; pointer-events: none; }
+.gd-group { position: absolute; top: -4px; left: calc(var(--gs) * (var(--tw, 46px) + 3px) - 2px); width: calc(var(--gn) * (var(--tw, 46px) + 3px) - 2px); height: calc(var(--tw, 46px) * 1.35 + 12px); border: 3px solid var(--gc); border-radius: 9px; animation: groupIn .4s ease backwards; pointer-events: none; }
 .gd-group span { position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); background: var(--gc); color: #111; font-weight: 800; font-size: 13px; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
 .gd-result { font-size: 18px; font-weight: 700; padding: 8px 14px; border-radius: 10px; min-height: 0; }
 .gd-result.ok { background: rgba(53,196,107,.25); color: #b6ffcf; }
@@ -478,8 +479,6 @@ body:not(.mode-net) .net-only { display: none; }
   .home-links button { font-size: 14px; padding: 7px 12px; }
   .versus .vs-seat > img { width: 84px; height: 105px; }
   .gd-caption { font-size: 16px; min-height: 110px; }
-  .gd-tile { width: 36px; height: 48px; }
-  .gd-group { left: calc(var(--gs) * 39px - 2px); width: calc(var(--gn) * 39px - 2px); height: 58px; }
   .modal { padding: 12px 16px; }
   .result { min-width: 0; }
   .mt { width: 26px; height: 35px; }

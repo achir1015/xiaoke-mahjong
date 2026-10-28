@@ -142,7 +142,7 @@ export function openGuide(ctx) {
   const body = $('#guideBody');
   body.innerHTML = '';
   const list = h('div', { class: 'gd-list' },
-    ...LESSONS.map((l, i) => h('button', { class: 'gd-item', 'data-i': i, onclick: () => { G.practice = false; goLesson(i); } }, h('span', { class: 'n' }, String(i + 1)), l.title)),
+    ...LESSONS.map((l, i) => h('button', { class: 'gd-item', 'data-i': i, onclick: () => { G.practice = false; goLesson(i); startPlay(); } }, h('span', { class: 'n' }, String(i + 1)), l.title)),
     h('button', { class: 'gd-item practice', 'data-i': 'p', onclick: () => openPractice(0) }, h('span', { class: 'n' }, '✎'), '練習題'));
   G.stage = h('div', { class: 'gd-stage' });
   G.caption = h('div', { class: 'gd-caption' });
@@ -158,6 +158,8 @@ export function openGuide(ctx) {
     h('div', { class: 'gd-body' }, list, h('div', { class: 'gd-main' }, G.stage, h('div', { class: 'gd-side' }, G.caption, G.ctrl, G.status))));
   ctx.show();
   goLesson(0);
+  // 一進來就開始語音講解
+  setTimeout(() => { if (G && !G.practice) startPlay(); }, 700);
 }
 
 function goLesson(i) {
@@ -174,6 +176,7 @@ function renderStep() {
   G.caption.innerHTML = '';
   G.caption.append(h('div', { class: 'gd-step muted small' }, `${L.title}　${G.si + 1} / ${L.steps.length}`), h('div', {}, st.say));
   G.stage.innerHTML = '';
+  fitTiles(Math.max(...st.rows.map((r) => r.tiles.length)));
   st.rows.forEach((row, ri) => {
     const tilesEl = h('div', { class: 'gd-tiles' }, row.tiles.map((t, k) => h('div', {
       class: 'gd-tile' + ((row.hl || []).includes(k) ? ' hl' : '') + ((row.dim || []).includes(k) ? ' dim' : '') + (row.fly === k ? ' fly' : '') + (t < 0 ? ' back' : ''),
@@ -201,6 +204,8 @@ function move(d) {
   return true;
 }
 
+function startPlay() { if (G && !G.playing) togglePlay(); }
+
 async function togglePlay() {
   if (G.playing) { stopPlay(); return; }
   G.playing = true;
@@ -216,8 +221,8 @@ async function togglePlay() {
     await new Promise((r) => setTimeout(r, 600));
     if (token !== G.token || !G.playing) return;
     const lastOfLesson = G.si === LESSONS[G.li].steps.length - 1;
-    if (lastOfLesson) { stopPlay(); toast('這一課講完了，可以點左邊下一課，或做練習題。', 'ok'); return; }
-    move(1);
+    if (lastOfLesson && G.li === LESSONS.length - 1) { stopPlay(); toast('全部講完了，來做練習題吧！', 'ok'); return; }
+    move(1); // 一課講完自動接下一課
   }
 }
 
@@ -230,6 +235,13 @@ function stopPlay() {
   if (b) b.textContent = '▶ 播放講解';
 }
 
+// 牌的大小依舞台寬度調整，一排最多 17 張也放得下
+function fitTiles(n) {
+  const w = G.stage.clientWidth || 800;
+  const tw = Math.max(22, Math.min(46, Math.floor((w - 50) / Math.max(n, 6)) - 3));
+  G.stage.style.setProperty('--tw', tw + 'px');
+}
+
 // 練習題
 function openPractice(i) {
   stopPlay();
@@ -238,6 +250,7 @@ function openPractice(i) {
   $$('.gd-item').forEach((b) => b.classList.toggle('on', b.dataset.i === 'p'));
   const p = PRACTICE[G.pi];
   const tiles = T(p.hand);
+  fitTiles(tiles.length);
   const answer = practiceAnswer(p);
   const picked = new Set();
   G.caption.className = 'gd-caption practice';
@@ -271,6 +284,7 @@ function openPractice(i) {
       h('div', { class: 'gd-choices' }, opts.map((n) => h('button', { onclick: () => check(n === answer[0], `${n === answer[0] ? '答對了！' : '不對喔。'}${sc.items.map((x) => `${x.name} ${x.tai} 台`).join('＋')}＝${sc.total} 台。`) }, `${n} 台`)))));
   }
   G.stage.append(result);
+  if (!G.ctx.voice.muted) { G.ctx.voice.stop(); G.ctx.voice.speak(p.q); }
   G.stage.append(h('div', { class: 'gd-ctrl' }, h('button', { onclick: () => openPractice(G.pi - 1) }, '◀ 上一題'), h('button', { class: 'primary', onclick: () => openPractice(G.pi + 1) }, '下一題 ▶')));
   void TAI;
 }
