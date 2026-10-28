@@ -483,3 +483,21 @@ body:not(.mode-net) .net-only { display: none; }
   .result { min-width: 0; }
   .mt { width: 26px; height: 35px; }
 }
+
+/* 說明頁：視窗很小（例如螢幕縮放 200% 以上）時讓中間的牌桌寬一點 */
+@media (max-width: 1100px) {
+  .guide { padding: 8px 12px; gap: 6px; }
+  .gd-head h2 { font-size: 20px; }
+  .gd-head .muted { display: none; }
+  .gd-body { grid-template-columns: 138px 1fr; gap: 8px; }
+  .gd-item { font-size: 13px; padding: 6px 8px; gap: 6px; }
+  .gd-item .n { width: 20px; height: 20px; font-size: 11px; }
+  .gd-main { grid-template-columns: minmax(0, 1fr) minmax(200px, 250px); gap: 8px; }
+  .gd-stage { padding: 10px 12px; border-width: 4px; gap: 10px; }
+  .gd-caption { font-size: 14.5px; line-height: 1.55; min-height: 0; padding: 8px 10px; }
+  .gd-ctrl { gap: 5px; }
+  .gd-ctrl button { padding: 5px 6px; font-size: 13px; }
+  .gd-label { font-size: 13px; }
+  .gd-group span { font-size: 11px; bottom: -20px; }
+  .gd-tilewrap { padding-bottom: 20px; }
+}

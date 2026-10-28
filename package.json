@@ -1,7 +1,7 @@
 {
   "name": "xiaoke-mahjong",
   "productName": "小柯機器人台灣麻將遊戲",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "小柯機器人台灣麻將遊戲：3D 台灣 16 張麻將（一人對三位 AI、遠端真人＋語音、AI 對 AI、AI 軍師代打、麻將智庫、背景音樂、遊戲說明、自動更新）",
   "main": "src/main/main.js",
   "author": {

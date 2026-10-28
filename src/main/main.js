@@ -113,6 +113,16 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: 'deny' }; });
   win.webContents.on('will-navigate', (e, url) => { if (!url.startsWith('app://')) e.preventDefault(); });
   win.on('closed', () => { win = null; advisor.cancelAll(); });
+  // 視窗太小（螢幕縮放 150%～250%）時整體縮小內容，版面維持至少 1280×720 的空間
+  const fitZoom = () => {
+    if (!win || win.isDestroyed()) return;
+    const [w, h] = win.getContentSize();
+    const z = Math.max(0.5, Math.min(1, w / 1280, h / 720));
+    if (Math.abs(win.webContents.getZoomFactor() - z) > 0.01) win.webContents.setZoomFactor(z);
+  };
+  win.on('resize', fitZoom);
+  win.webContents.on('did-finish-load', fitZoom);
+  win.once('ready-to-show', () => setTimeout(fitZoom, 50));
 }
 
 // ---------------- app:// 協定（支援 Range，音樂可拖曳進度） ----------------

@@ -101,7 +101,13 @@ try {
   await shot('4-table');
 
   // 軍師（離線）
-  await waitFor(() => window.__xkm.opts.some((o) => o.type === 'discard') || window.__xkm.view.result, null, 60000);
+  // 等到輪我打牌（中途有吃碰提示就按「過」）
+  for (let i = 0; i < 400; i++) {
+    const st = await win.evaluate(() => ({ d: window.__xkm.opts.some((o) => o.type === 'discard') || !!window.__xkm.view.result, p: window.__xkm.opts.some((o) => o.type === 'pass') }));
+    if (st.d) break;
+    if (st.p) await win.click('.act.pass').catch(() => {});
+    await win.waitForTimeout(150);
+  }
   await win.click('.adv-quick .chip');
   await waitFor(() => { const m = [...document.querySelectorAll('.adv-msg.ai')].pop(); return m && !m.classList.contains('thinking') && m.textContent.length > 8; });
   const adv = await win.evaluate(() => [...document.querySelectorAll('.adv-msg.ai')].pop().textContent);

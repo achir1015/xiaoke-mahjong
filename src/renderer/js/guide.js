@@ -157,6 +157,8 @@ export function openGuide(ctx) {
       h('button', { class: 'gd-back', onclick: () => { stopPlay(); ctx.back(); } }, '⟵ 返回首頁')),
     h('div', { class: 'gd-body' }, list, h('div', { class: 'gd-main' }, G.stage, h('div', { class: 'gd-side' }, G.caption, G.ctrl, G.status))));
   ctx.show();
+  // 視窗大小改變時重新排牌
+  if (!window.__gdResize) { window.__gdResize = true; window.addEventListener('resize', () => { if (G && G.stage && G.fitN) fitTiles(G.fitN); }); }
   goLesson(0);
   // 一進來就開始語音講解
   setTimeout(() => { if (G && !G.practice) startPlay(); }, 700);
@@ -237,8 +239,10 @@ function stopPlay() {
 
 // 牌的大小依舞台寬度調整，一排最多 17 張也放得下
 function fitTiles(n) {
-  const w = G.stage.clientWidth || 800;
-  const tw = Math.max(22, Math.min(46, Math.floor((w - 50) / Math.max(n, 6)) - 3));
+  G.fitN = n;
+  const cs = getComputedStyle(G.stage);
+  const w = (G.stage.clientWidth || 800) - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 6;
+  const tw = Math.max(14, Math.min(46, Math.floor(w / Math.max(n, 6)) - 3));
   G.stage.style.setProperty('--tw', tw + 'px');
 }
 

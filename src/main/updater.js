@@ -37,6 +37,33 @@ function pickAsset(assets) {
   return null;
 }
 
+// 剛下載的 exe 常被防毒軟體掃描而暫時鎖住（EBUSY／EPERM），等一下再試
+async function copyWithRetry(from, to, tries = 20) {
+  for (let i = 0; ; i++) {
+    try { fs.copyFileSync(from, to); return; } catch (e) {
+      if (i >= tries - 1 || !['EBUSY', 'EPERM', 'EACCES'].includes(e.code)) throw e;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+}
+
+// 確定新程式真的啟動了才結束舊版（被鎖住時重試），失敗就把錯誤回報給畫面
+async function launchWithRetry(file, args, tries = 20) {
+  for (let i = 0; ; i++) {
+    try {
+      await new Promise((resolve, reject) => {
+        const child = spawn(file, args, { detached: true, stdio: 'ignore' });
+        child.once('spawn', () => { child.unref(); resolve(); });
+        child.once('error', reject);
+      });
+      return;
+    } catch (e) {
+      if (i >= tries - 1 || !['EBUSY', 'EPERM', 'EACCES', 'UNKNOWN'].includes(e.code)) throw e;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+}
+
 class Updater {
   constructor() { this.info = null; this.downloading = null; }
 
@@ -122,22 +149,20 @@ class Updater {
   async install(file) {
     const f = flavor();
     if (f === 'nsis') {
-      const child = spawn(file, ['/S', '--force-run'], { detached: true, stdio: 'ignore' });
-      child.unref();
+      await launchWithRetry(file, ['/S', '--force-run']);
       setTimeout(() => app.quit(), 400);
       return { quitting: true };
     }
     if (f === 'portable') {
       const target = path.join(path.dirname(process.env.PORTABLE_EXECUTABLE_FILE), path.basename(file));
-      fs.copyFileSync(file, target);
-      const child = spawn(target, [], { detached: true, stdio: 'ignore' });
-      child.unref();
+      await copyWithRetry(file, target);
+      await launchWithRetry(target, []);
       setTimeout(() => app.quit(), 400);
       return { quitting: true, path: target };
     }
     if (f === 'mac') {
       const target = path.join(app.getPath('downloads'), path.basename(file));
-      fs.copyFileSync(file, target);
+      await copyWithRetry(file, target);
       await shell.openPath(target);
       return { manual: true, path: target };
     }
