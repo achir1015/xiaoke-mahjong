@@ -6,10 +6,13 @@
   if (window.xk) return;
   var A = window.XiaokeAndroid || null;
   var isAndroid = !!A;
+  // iPhone／iPad App：WKWebView 的訊息通道（非同步，回傳 Promise）
+  var isIOS = !!(window.XiaokeIOS && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.xkm);
+  function ios(cmd, args) { return window.webkit.messageHandlers.xkm.postMessage({ cmd: cmd, args: args || [] }); }
   var ua = navigator.userAgent || '';
   var mobile = isAndroid || /Android|iPhone|iPad|Mobile/i.test(ua) || /[?&]mobile=1/.test(location.search);
   if (mobile) document.documentElement.classList.add('mobile');
-  document.documentElement.classList.add(isAndroid ? 'android' : 'webapp');
+  document.documentElement.classList.add(isAndroid ? 'android' : isIOS ? 'ios' : 'webapp');
 
   function parse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -131,6 +134,14 @@
       var e = parse(A.endSave(b.token));
       return Promise.resolve(e && e.path ? e.path : name);
     }
+    if (isIOS) {
+      return ios('begin_save', [name]).then(function (b) {
+        if (!b || b.status !== 'ok') throw new Error((b && b.message) || '無法存檔');
+        var chain = Promise.resolve();
+        for (var i = 0; i < bytes.length; i += 512 * 1024) (function (part) { chain = chain.then(function () { return ios('write_chunk', [b.token, b64(part)]); }); })(bytes.subarray(i, i + 512 * 1024));
+        return chain.then(function () { return ios('end_save', [b.token]); }).then(function (e) { return e && e.status === 'ok' ? e.path : ''; });
+      });
+    }
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([bytes], { type: 'text/plain;charset=utf-8' }));
     a.download = name;
@@ -164,7 +175,7 @@
       return r.json();
     }).then(function (j) {
       var latest = String(j.tag_name || '').replace(/^v/, '');
-      updInfo = { current: cur, latest: latest, newer: cmpVer(latest, cur) > 0, notes: String(j.body || '').slice(0, 4000), page: j.html_url, asset: null, flavor: 'web', canInstall: false };
+      updInfo = { current: cur, latest: latest, newer: cmpVer(latest, cur) > 0, notes: String(j.body || '').slice(0, 4000), page: j.html_url, asset: null, flavor: isIOS ? 'ios' : 'web', canInstall: false };
       return updInfo;
     });
   }
@@ -255,11 +266,11 @@
   window.xk = {
     settings: { get: function () { return Promise.resolve(pub()); }, set: function (p) { return Promise.resolve(setSettings(p)); } },
     sys: {
-      info: function () { return Promise.resolve({ platform: isAndroid ? 'android' : 'web', arch: '', version: appVersion(), packaged: isAndroid, profile: '', electron: '', mobile: mobile }); },
+      info: function () { return Promise.resolve({ platform: isAndroid ? 'android' : isIOS ? 'ios' : 'web', arch: '', version: appVersion(), packaged: isAndroid, profile: '', electron: '', mobile: mobile }); },
       askMicrophone: function () { return Promise.resolve(true); },
     },
     win: { attention: function () { try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) { /* 不支援 */ } return Promise.resolve(); } },
-    openExternal: function (url) { if (isAndroid) A.openUrl(url); else window.open(url, '_blank'); return Promise.resolve(); },
+    openExternal: function (url) { if (isAndroid) A.openUrl(url); else if (isIOS) ios('open_url', [url]); else window.open(url, '_blank'); return Promise.resolve(); },
     games: {
       save: function (rec) { var id = String(rec.id || '').replace(/[^\w.-]/g, '') || newId(); var data = Object.assign({}, rec, { id: id }); return tx('games', 'readwrite', function (s) { s.put(data); }).then(function () { return id; }); },
       list: function () { return tx('games', 'readonly', function (s) { return s.getAll(); }).then(function (l) { return (l || []).sort(function (a, b) { return a.id < b.id ? 1 : -1; }).map(summary); }); },
@@ -301,7 +312,7 @@
       check: checkUpdate,
       download: downloadUpdate,
       install: function () { return Promise.resolve({ manual: true, android: isAndroid }); },
-      openPage: function () { var u = (updInfo && updInfo.page) || 'https://github.com/achir1015/xiaoke-mahjong/releases/latest'; if (isAndroid) A.openUrl(u); else window.open(u, '_blank'); return Promise.resolve(); },
+      openPage: function () { var u = (updInfo && updInfo.page) || 'https://github.com/achir1015/xiaoke-mahjong/releases/latest'; if (isAndroid) A.openUrl(u); else if (isIOS) ios('open_url', [u]); else window.open(u, '_blank'); return Promise.resolve(); },
       onProgress: function (fn) { progressFns.push(fn); return function () { progressFns = progressFns.filter(function (f) { return f !== fn; }); }; },
     },
     advisor: {
@@ -314,5 +325,6 @@
     tts: tts,
     mobile: mobile,
     android: isAndroid,
+    ios: isIOS,
   };
 })();
