@@ -2,7 +2,6 @@
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/64522596-ed0c-40a6-bc2e-21c7b442a543" />
 媒體示範
 
-https://github.com/user-attachments/assets/c8909d58-dfd7-4137-8632-a067aa38520d
 
 3D 台灣 16 張麻將：一人對三位 AI、邀約遠端真人（語音＋聊天）、全部 AI 對戰、AI 軍師指點與代打、麻將智庫（牌譜重播、AI 學習）、20 首原創背景音樂、遊戲說明（動畫＋語音）、自動更新。
 
