@@ -26,7 +26,9 @@ https://github.com/user-attachments/assets/4b401f23-62e6-485f-96aa-2292af8e7eac
 | Intel Mac | `XiaokeMahjong-版本-mac-x64.dmg` |
 | Android 手機 | `XiaokeMahjong-版本-android.apk`（橫向畫面） |
 
-iPad Pro、iPhone 版本規劃中。
+| iPhone／iPad Pro | 已完成並在 iPhone 15 Pro Max 實機測試，等 App Store 上架（上架前由開發者用 Xcode 安裝） |
+
+- **iPhone／iPad 版**：`ios/`（XcodeGen 專案，WKWebView＋App 內本機伺服器，和 Android 版同一份遊戲程式）。在 Mac 上執行 `node scripts/build-mobile.mjs`（或從 Windows 產生後複製）→ `bash ios/sync.sh` → 用 Xcode 開 `ios/XiaokeMahjong.xcodeproj` 執行；也可用 `osascript ios/run-on-iphone.applescript <專案路徑>` 讓 Xcode 直接裝到接著的 iPhone。
 
 ## 規則重點
 
