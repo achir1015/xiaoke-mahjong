@@ -40,7 +40,17 @@ final class Web: NSObject, WKScriptMessageHandlerWithReply, WKNavigationDelegate
         cfg.mediaTypesRequiringUserActionForPlayback = []
         cfg.websiteDataStore = .default()
         // 讓網頁知道自己在 iPhone／iPad App 裡（js/xk-mobile.js 會改用 App 的存檔、開網址功能）
-        let shim = WKUserScript(source: "window.XiaokeIOS = true;", injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        // 網頁的錯誤訊息轉到 iOS 系統記錄（除錯：log show --predicate 'process == "XiaokeMahjong"'）
+        let shim = WKUserScript(source: """
+            window.XiaokeIOS = true;
+            (function () {
+              function send(k, a) { try { window.webkit.messageHandlers.xkm.postMessage({ cmd: 'log', args: [k, Array.prototype.map.call(a, function (x) { return x && x.stack ? x.stack : String(x); }).join(' ')] }); } catch (e) {} }
+              var ce = console.error.bind(console);
+              console.error = function () { send('error', arguments); ce.apply(null, arguments); };
+              window.addEventListener('error', function (e) { send('pageerror', [e.message + ' @' + e.filename + ':' + e.lineno]); });
+              window.addEventListener('unhandledrejection', function (e) { send('rejection', [e.reason]); });
+            })();
+            """, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         cfg.userContentController.addUserScript(shim)
         view = WKWebView(frame: .zero, configuration: cfg)
         super.init()
@@ -107,6 +117,9 @@ final class Web: NSObject, WKScriptMessageHandlerWithReply, WKNavigationDelegate
             guard let sv = saves.removeValue(forKey: s(0)) else { replyHandler(["status": "error", "message": "no session"], nil); return }
             try? sv.handle.close()
             share(sv.url) { done in replyHandler(done ? ["status": "ok", "path": sv.name] : ["status": "declined"], nil) }
+        case "log":
+            NSLog("[web %@] %@", s(0), s(1))
+            replyHandler(true, nil)
         case "open_url":
             if let u = URL(string: s(0)), ["github.com", "achir1015.github.io", "console.anthropic.com", "apps.apple.com"].contains(u.host ?? "") { UIApplication.shared.open(u) }
             replyHandler(true, nil)
