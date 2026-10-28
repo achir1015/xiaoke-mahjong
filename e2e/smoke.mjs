@@ -97,6 +97,9 @@ try {
   check('牌桌顯示四張座位卡', g0.cards === 4);
   check('對局上方顯示日期時間', g0.clock.startsWith('西元'), g0.clock);
   check('3D 牌桌有立體牌', g0.objs > 60, String(g0.objs));
+  // 版面：右側面板要在牌桌右邊、牌桌要佔滿主要區域
+  const lay = await win.evaluate(() => { const b = document.querySelector('#boardWrap').getBoundingClientRect(), r = document.querySelector('.right').getBoundingClientRect(); return { bw: Math.round(b.width), bh: Math.round(b.height), bRight: Math.round(b.right), rLeft: Math.round(r.left), rTop: Math.round(r.top), bTop: Math.round(b.top), vh: innerHeight }; });
+  check('版面：右側面板在牌桌右邊、牌桌佔滿高度', lay.rLeft >= lay.bRight - 1 && Math.abs(lay.rTop - lay.bTop) < 2 && lay.bh > lay.vh * 0.75, JSON.stringify(lay));
   await win.waitForTimeout(1200);
   await shot('4-table');
 
