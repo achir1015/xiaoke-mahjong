@@ -1,10 +1,10 @@
 // 遠端對賽連線：PeerJS（WebRTC）
 // 房主（host）是中心：其他人（參賽者、觀棋者）都連到房主，訊息由房主轉送。
-// 語音通話則是每兩人直接相連（mesh），最多 3 位參賽者＋觀棋者。
+// 語音通話則是每兩人直接相連（mesh），最多 4 位牌友＋觀眾。
 import { Emitter, errMsg } from './util.js';
 
 const PeerCtor = () => window.Peer || (window.peerjs && window.peerjs.Peer);
-export const PREFIX = 'xkjump-';
+export const PREFIX = 'xkmj-';
 export const PROTOCOL = 1;
 export const MAX_MEMBERS = 8; // 房主以外最多幾人（參賽＋觀棋）
 
