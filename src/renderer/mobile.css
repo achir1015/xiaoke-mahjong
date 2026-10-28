@@ -1,0 +1,140 @@
+/* 手機版（Android App／手機瀏覽器）：橫向畫面，牌桌佔滿；軍師、聊天、紀錄、音樂改成右側抽屜 */
+html.mobile { -webkit-tap-highlight-color: transparent; }
+html.mobile body { user-select: none; -webkit-user-select: none; overscroll-behavior: none; }
+html.mobile input, html.mobile textarea { user-select: text; -webkit-user-select: text; }
+html.mobile .mobile-only { display: inline-flex; }
+html.mobile .screen { height: 100dvh; }
+
+/* ---------- 牌桌 ---------- */
+html.mobile .topbar { height: 38px; padding: 2px 8px; gap: 6px; }
+html.mobile #btnHome { padding: 4px 6px; font-size: 13px; }
+html.mobile .banner-wrap { gap: 0; }
+html.mobile .clock { font-size: 10px; letter-spacing: 0; }
+html.mobile .turn-banner { font-size: 14px; letter-spacing: 1px; padding: 0 8px; }
+html.mobile .viewgroup, html.mobile .volbox { display: none; }
+html.mobile .drawer-btn { font-size: 22px; padding: 2px 10px; border: 1px solid var(--line); background: var(--panel2); }
+html.mobile .game-body { grid-template-columns: 1fr; position: relative; }
+html.mobile .right { position: fixed; top: 0; right: 0; bottom: 0; width: min(340px, 86vw); z-index: 40; transform: translateX(105%); transition: transform .22s ease; box-shadow: -10px 0 30px rgba(0,0,0,.5); }
+html.mobile.drawer-open .right { transform: none; }
+html.mobile .drawer-shade { display: none; }
+html.mobile.drawer-open .drawer-shade { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 39; }
+html.mobile .board-tip { display: none; }
+html.mobile .seat-card { min-width: 0; gap: 4px; padding: 2px 6px 2px 2px; border-radius: 8px; border-width: 1.5px; }
+html.mobile .sc-av > img:first-child { width: 26px; height: 32px; border-radius: 4px; }
+html.mobile .sc-sub { display: none; }
+html.mobile .sc-name { font-size: 10.5px; max-width: 86px; overflow: hidden; text-overflow: ellipsis; }
+html.mobile .sc-tags { gap: 2px; }
+html.mobile .tag { font-size: 9px; padding: 0 3px; }
+html.mobile .sc-score { font-size: 11px; gap: 4px; }
+html.mobile .sc-fl { font-size: 9px; }
+html.mobile .sc-timer { font-size: 9.5px; }
+html.mobile .seat-card.pos0 { left: 4px; bottom: 4px; }
+html.mobile .seat-card.pos1 { right: 4px; top: 42%; }
+html.mobile .seat-card.pos2 { right: 4px; top: 4px; }
+html.mobile .seat-card.pos3 { left: 4px; top: 42%; }
+html.mobile .hand-label { top: 3px; font-size: 9.5px; padding: 1px 6px; }
+html.mobile .table-btns { right: 4px; bottom: 50px; gap: 3px; }
+html.mobile .table-btns button { min-width: 0; padding: 3px 7px; font-size: 11px; }
+html.mobile .action-bar { bottom: 26%; gap: 6px; }
+html.mobile .act { font-size: 15px; padding: 5px 12px; border-radius: 10px; }
+html.mobile .act.win { font-size: 17px; }
+html.mobile .act.pass { font-size: 13px; }
+html.mobile .mini-t { width: 17px; height: 23px; }
+html.mobile .wait-info { left: 104px; bottom: 3px; font-size: 10px; padding: 2px 5px; gap: 3px; }
+html.mobile .wait-info img { width: 14px; height: 19px; }
+html.mobile .callout { font-size: 34px; -webkit-text-stroke-width: 1px; }
+html.mobile .replay-bar { bottom: 3px; padding: 3px 6px; gap: 3px; }
+html.mobile .replay-bar button { padding: 3px 7px; font-size: 11px; }
+html.mobile .versus h2 { font-size: 20px; }
+html.mobile .vs-row { gap: 8px; }
+html.mobile .vs-seat { padding: 6px; }
+html.mobile .vs-seat > img { width: 60px; height: 75px; }
+html.mobile .vs-seat b { font-size: 12px; }
+html.mobile .vs-adv { font-size: 10px; }
+
+/* 抽屜內容 */
+html.mobile .tab { padding: 9px 2px; font-size: 13px; }
+html.mobile .adv-msg { font-size: 13px; }
+html.mobile .adv-quick .chip { font-size: 11.5px; padding: 3px 7px; }
+html.mobile .adv-head { padding: 6px 10px; }
+html.mobile .adv-avatar img { width: 32px; height: 40px; }
+
+/* ---------- 首頁 ---------- */
+html.mobile .home { padding: 8px 10px; }
+html.mobile .home-hero { gap: 10px; margin-bottom: 8px; }
+html.mobile .home-hero h1 { font-size: 19px; letter-spacing: 0; }
+html.mobile .home-hero p { font-size: 11px; }
+html.mobile .hero-icon { width: 48px; height: 48px; }
+html.mobile .home-clock { font-size: 10px; margin-top: 2px; }
+html.mobile .profile-card { padding: 4px 8px; gap: 6px; }
+html.mobile .pc-avatar { width: 40px; height: 50px; }
+html.mobile .pc-mid { gap: 2px; }
+html.mobile .name-in { width: 120px; font-size: 13px; padding: 3px 6px; }
+html.mobile .pc-adv { font-size: 10.5px; }
+html.mobile .pc-adv img { width: 20px; height: 25px; }
+html.mobile .mode-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+html.mobile .card { padding: 8px; border-radius: 10px; }
+html.mobile .mode-card { gap: 3px; }
+html.mobile .mode-card h2 { font-size: 14px; }
+html.mobile .mode-card p { font-size: 10.5px; line-height: 1.4; }
+html.mobile .mode-card label { font-size: 10.5px; }
+html.mobile .card-icon { display: none; }
+html.mobile .mode-card select, html.mobile .mode-card input { font-size: 12px; padding: 3px 5px; }
+html.mobile .mode-card button { font-size: 12px; padding: 4px 6px; }
+html.mobile .mode-card button.big { font-size: 14px; padding: 6px 10px; }
+html.mobile .lv-row4 { grid-template-columns: repeat(2, 1fr); gap: 3px; }
+html.mobile .num-in { width: 64px; }
+html.mobile .room-code { font-size: 24px; letter-spacing: 3px; }
+html.mobile .code-in { font-size: 14px; letter-spacing: 1px; }
+html.mobile .home-links { margin-top: 8px; gap: 6px; }
+html.mobile .home-links button { font-size: 12px; padding: 5px 9px; }
+html.mobile .credit { margin-top: 6px; font-size: 10px; }
+
+/* ---------- 智庫、說明、對話框 ---------- */
+html.mobile .records { padding: 8px 10px; gap: 8px; }
+html.mobile .rec-head h2 { font-size: 17px; }
+html.mobile .rec-head p { font-size: 11px; }
+html.mobile .rec-actions button { font-size: 12px; padding: 4px 8px; }
+html.mobile .kb-stats { gap: 5px; }
+html.mobile .kb-card { padding: 4px 8px; }
+html.mobile .kb-card b { font-size: 17px; }
+html.mobile .kb-card span { font-size: 10.5px; }
+html.mobile .kb-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+html.mobile .kb-box { padding: 6px 8px; font-size: 11px; }
+html.mobile .rec-table th, html.mobile .rec-table td { padding: 4px 6px; font-size: 11.5px; }
+html.mobile .guide { padding: 4px 8px; gap: 4px; }
+html.mobile .gd-head h2 { font-size: 16px; }
+html.mobile .gd-head .muted { display: none; }
+html.mobile .gd-back { padding: 3px 8px; font-size: 12px; }
+html.mobile .gd-body { grid-template-columns: 112px 1fr; gap: 6px; }
+html.mobile .gd-item { font-size: 11px; padding: 4px 6px; gap: 4px; }
+html.mobile .gd-item .n { width: 16px; height: 16px; font-size: 9px; }
+html.mobile .gd-main { grid-template-columns: minmax(0, 1fr) minmax(170px, 210px); gap: 6px; }
+html.mobile .gd-stage { padding: 6px 8px; border-width: 3px; gap: 6px; border-radius: 10px; }
+html.mobile .gd-caption { font-size: 12px; line-height: 1.5; padding: 6px 8px; }
+html.mobile .gd-ctrl button { font-size: 11px; padding: 4px 4px; }
+html.mobile .gd-status { font-size: 10px; }
+html.mobile .gd-label { font-size: 11px; }
+html.mobile .gd-group span { font-size: 9.5px; bottom: -17px; padding: 0 5px; }
+html.mobile .gd-tilewrap { padding-bottom: 16px; }
+html.mobile .gd-result { font-size: 13px; padding: 4px 8px; }
+html.mobile .modal { padding: 10px 12px; min-width: 0; max-width: 96vw; max-height: 94dvh; }
+html.mobile .modal h3 { font-size: 15px; margin-bottom: 6px; }
+html.mobile .modal-btns { margin-top: 8px; }
+html.mobile .result { gap: 6px; }
+html.mobile .mt { width: 22px; height: 30px; }
+html.mobile .tiles.big .mt { width: 28px; height: 38px; }
+html.mobile .tai-table td, html.mobile .delta-table td { padding: 2px 6px; font-size: 12px; }
+html.mobile .final { min-width: 0; }
+html.mobile .pf-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); max-height: 46dvh; }
+html.mobile .pf-item img { width: 52px; height: 65px; }
+html.mobile .pf-right { width: 110px; }
+html.mobile .pf-slot img, html.mobile .pf-slot .pf-empty { width: 80px; height: 100px; }
+html.mobile .pf-slot.small img, html.mobile .pf-slot.small .pf-empty { width: 56px; height: 70px; }
+html.mobile .set-row { grid-template-columns: 110px 1fr; font-size: 12px; }
+html.mobile #toasts { right: 6px; bottom: 6px; }
+html.mobile .toast { font-size: 12px; padding: 6px 10px; }
+html.mobile .mode-card button, html.mobile .segbtn, html.mobile .net-row button { white-space: nowrap; }
+html.mobile .segbtn { padding: 4px 2px; }
+html.mobile .net-row { gap: 4px; }
+html.mobile .net-row > input { min-width: 0; }

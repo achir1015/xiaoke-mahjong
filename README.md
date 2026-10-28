@@ -18,8 +18,9 @@
 | Windows 11 | `XiaokeMahjong-版本-win-x64.exe`（安裝版）／`-portable.exe`（免安裝） |
 | MacBook Pro（Apple 晶片） | `XiaokeMahjong-版本-mac-arm64.dmg` |
 | Intel Mac | `XiaokeMahjong-版本-mac-x64.dmg` |
+| Android 手機 | `XiaokeMahjong-版本-android.apk`（橫向畫面） |
 
-iPad Pro、Android、iPhone 版本規劃中。
+iPad Pro、iPhone 版本規劃中。
 
 ## 規則重點
 
@@ -40,6 +41,9 @@ npm test           # 規則、台數、AI、智庫、說明單元測試
 npm run e2e        # 端對端測試（Electron）
 node e2e/net.mjs   # 遠端對戰測試（本機配對伺服器＋四個實例）
 npm run dist:win   # 打包 Windows 安裝檔
+python android/build.py debug install   # 建置 Android APK 並裝到 USB 連接的手機
+node e2e/mobile.mjs  # 手機版網頁（模擬手機尺寸）
+node e2e/phone.mjs   # 實機測試（除錯版 APK）
 ```
 
 - `src/renderer/js/rules.js`：牌局引擎（發牌、補花、摸打、吃碰槓、胡、流局、整場）

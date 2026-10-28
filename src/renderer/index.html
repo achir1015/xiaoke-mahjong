@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-5xY7jflTAlHffw31YtTHdjSdKmm2Ra05XuGOgpvwYYY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' app: blob: mediastream:; connect-src 'self' https: wss: ws: http:; worker-src 'self' blob:">
 <title>小柯機器人台灣麻將遊戲</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
 <script type="importmap">{"imports":{"three":"../../node_modules/three/build/three.module.js","three/addons/controls/":"./vendor/"}}</script>
 <script src="../../node_modules/peerjs/dist/peerjs.min.js"></script>
+<script src="js/xk-mobile.js"></script>
 <script type="module" src="js/app.js"></script>
 </head>
 <body>
@@ -33,6 +36,7 @@
           <button id="btnSfx" class="ghost vol-icon">🔔</button>
           <input id="sfxVol" class="vslider" type="range" min="0" max="100">
         </div>
+        <button id="btnDrawer" class="ghost mobile-only drawer-btn" title="軍師、聊天、紀錄、音樂">☰</button>
         <div class="volbox" title="背景音樂音量">
           <button id="miniMusic" class="ghost vol-icon">♫</button>
           <input id="musicVol" class="vslider" type="range" min="0" max="100">
@@ -62,6 +66,7 @@
         </div>
         <div class="board-tip muted small">點手牌選取、再點一次（或雙擊）打出．右鍵拖曳旋轉．滾輪縮放</div>
       </main>
+      <div id="drawerShade" class="drawer-shade"></div>
       <aside class="right">
         <nav class="tabs">
           <button class="tab on" data-tab="advisor">🧙 軍師</button>

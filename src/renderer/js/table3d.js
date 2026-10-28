@@ -217,6 +217,8 @@ export class Table3D {
     this.camera.aspect = w / h;
     // 視窗較窄時拉遠一點，整張桌子才看得到
     this.camera.fov = w / h < 1.25 ? 48 : 38;
+    // 很寬的畫面（手機橫放）左右有空，鏡頭拉近一點，手牌比較大
+    this.camera.zoom = w / h > 1.9 ? 1.12 : 1;
     this.camera.updateProjectionMatrix();
   }
 

@@ -99,6 +99,7 @@ async function chooseProfile(required) {
 // ---------------- 畫面切換 ----------------
 function showScreen(name) {
   S.screen = name;
+  setDrawer(false);
   $$('.screen').forEach((el) => el.classList.toggle('on', el.id === 'scr-' + name));
   if (name === 'game') setTimeout(() => table.resize(), 30);
   if (name === 'kb') renderKB();
@@ -114,6 +115,10 @@ function bindUI() {
   $('#btnPause').onclick = () => togglePause();
   $('#btnNext').onclick = () => onNextClick();
   $('#miniMusic').onclick = () => { selectTab('music'); music.toggle(); };
+  // 手機：右側面板變成抽屜
+  $('#btnDrawer').onclick = () => setDrawer(!document.documentElement.classList.contains('drawer-open'));
+  $('#drawerShade').onclick = () => setDrawer(false);
+  window.__xkmBack = onBackKey;
   $('#btnSfx').onclick = () => { const on = !S.settings.sfx; setSfx(on); saveSettings({ sfx: on }); renderVolume(); };
   const mv = $('#musicVol');
   mv.oninput = () => { music.cfg.volume = mv.value / 100; music.applyVolume(); music.persist(); };
@@ -147,6 +152,19 @@ function renderVolume() {
   $('#musicVol').value = Math.round((music ? music.cfg.volume : 0.45) * 100);
   $('#sfxVol').value = Math.round(sfxVolume() * 100);
   $('#btnSfx').textContent = S.settings.sfx ? '🔔' : '🔕';
+}
+
+function setDrawer(on) { document.documentElement.classList.toggle('drawer-open', !!on); }
+
+// Android 返回鍵：先關對話框、抽屜，再離開牌桌；回傳 true 表示已處理
+function onBackKey() {
+  const back = [...document.querySelectorAll('.modal-back')].pop();
+  if (back) { const btns = [...back.querySelectorAll('.modal-btns button')]; (btns.find((b) => !b.classList.contains('primary')) || btns[0])?.click(); return true; }
+  if (document.documentElement.classList.contains('drawer-open')) { setDrawer(false); return true; }
+  if (S.screen === 'guide') { document.querySelector('.gd-back')?.click(); return true; }
+  if (S.screen === 'kb') { showScreen('home'); return true; }
+  if (S.screen === 'game') { leaveGame(); return true; }
+  return false;
 }
 
 function selectTab(name) {
@@ -261,7 +279,7 @@ function renderHome() {
       h('button', { class: 'guide-btn', id: 'btnGuide', onclick: () => openGuide(guideCtx()) }, '📖 遊戲說明'),
       h('button', { id: 'btnKB', onclick: () => showScreen('kb') }, '📚 麻將智庫'),
       h('button', { onclick: () => openSettings() }, '⚙ 設定'),
-      h('button', { onclick: () => { selectTab('music'); enterIdle(); } }, '♫ 背景音樂'),
+      h('button', { onclick: () => { selectTab('music'); enterIdle(); setDrawer(true); } }, '♫ 背景音樂'),
       h('button', { id: 'btnAbout', onclick: () => openAbout() }, 'ℹ 關於與更新')),
     h('div', { class: 'credit muted small' }, `v${S.info.version}　${CREDIT}`),
   );
@@ -1396,7 +1414,7 @@ async function openAbout() {
   const status = h('div', { class: 'upd-status muted' }, '正在檢查是否有新版本…');
   const body = h('div', { class: 'about' },
     h('div', { class: 'about-head' }, h('img', { class: 'hero-icon small', src: '../../build/icon.png' }),
-      h('div', {}, h('h2', {}, APP_NAME), h('div', { class: 'muted' }, `版本 v${S.info.version}　（${S.info.platform === 'darwin' ? 'macOS' : S.info.platform === 'win32' ? 'Windows' : S.info.platform}）`))),
+      h('div', {}, h('h2', {}, APP_NAME), h('div', { class: 'muted' }, `版本 v${S.info.version}　（${{ darwin: 'macOS', win32: 'Windows', android: 'Android', web: '網頁版' }[S.info.platform] || S.info.platform}）`))),
     h('p', { class: 'credit-line' }, CREDIT),
     h('p', { class: 'muted small' }, '3D 台灣 16 張麻將：一人對三位 AI、邀約遠端真人（空位 AI 補位、觀戰、語音與文字聊天）、全部 AI 對戰；AI 軍師指點與代打；麻將智庫（牌譜、重播、AI 學習）；20 首原創背景音樂；遊戲說明（動畫與語音）。'),
     h('p', { class: 'muted small' }, '規則與台數參考：github.com/yuweiiihuang/mahjong16（台灣 16 張麻將環境）'),
@@ -1443,13 +1461,13 @@ async function startUpdate(info) {
   try {
     const file = await xk.update.download();
     off();
-    txt.textContent = info.flavor === 'mac' ? '下載完成，正在開啟安裝檔…' : '下載完成，正在安裝，程式會自動重新開啟…';
+    txt.textContent = info.flavor === 'mac' ? '下載完成，正在開啟安裝檔…' : info.flavor === 'android' ? '下載完成，正在開啟安裝畫面…' : '下載完成，正在安裝，程式會自動重新開啟…';
     const r = await xk.update.install(file);
     if (r.manual) {
       box.remove();
       await modal('請完成安裝', h('div', {},
-        h('p', {}, '新版安裝檔已開啟（也放在「下載」資料夾）。'),
-        h('p', {}, info.flavor === 'mac' ? `請先結束本程式，再把「${APP_NAME}」拖到「應用程式」資料夾覆蓋舊版。` : '請依照畫面指示完成安裝。')));
+        info.flavor === 'android' ? h('p', {}, '請在 Android 的安裝畫面按「更新」或「安裝」，完成後重新開啟小柯麻將。') : h('p', {}, '新版安裝檔已開啟（也放在「下載」資料夾）。'),
+        info.flavor === 'android' ? null : h('p', {}, info.flavor === 'mac' ? `請先結束本程式，再把「${APP_NAME}」拖到「應用程式」資料夾覆蓋舊版。` : '請依照畫面指示完成安裝。')));
     }
   } catch (e) {
     off();

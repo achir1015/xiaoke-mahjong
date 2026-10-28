@@ -1,4 +1,5 @@
-// 中文語音（系統 speechSynthesis）：報牌、喊吃碰槓胡，以及遊戲說明朗讀
+// 中文語音：報牌、喊吃碰槓胡，以及遊戲說明朗讀
+// 桌面版用系統 speechSynthesis；Android App 的 WebView 沒有網頁語音，改用手機原生的文字轉語音（window.xk.tts）
 class Voice {
   constructor() {
     this.voice = null;
@@ -20,14 +21,16 @@ class Voice {
       || vs.find((v) => /zh[-_]TW/i.test(v.lang)) || vs.find((v) => /zh[-_]HK/i.test(v.lang)) || vs.find((v) => /^zh/i.test(v.lang)) || null;
   }
 
-  get available() { if (!this.voice) this.pick(); return 'speechSynthesis' in window && !!this.voice; }
-  get voiceName() { return this.voice ? this.voice.name : ''; }
+  get native() { return (window.xk && window.xk.tts) || null; }
+  get available() { if (this.native) return this.native.available(); if (!this.voice) this.pick(); return 'speechSynthesis' in window && !!this.voice; }
+  get voiceName() { if (this.native) return this.native.voiceName(); return this.voice ? this.voice.name : ''; }
 
-  stop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+  stop() { if (this.native) this.native.stop(); else if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 
   // 牌桌上的短語：不排隊，太多就跳過舊的
   call(text, { pitch = 1, rate = 1.15, urgent = false } = {}) {
     if (!this.enabled || !this.available) return;
+    if (this.native) { this.native.speak(text, rate); return; }
     if (urgent || speechSynthesis.pending) speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.voice = this.voice; u.lang = this.voice.lang; u.pitch = pitch; u.rate = rate; u.volume = 1;
@@ -38,6 +41,7 @@ class Voice {
   speak(text) {
     const plain = String(text).replace(/[「」（）()【】]/g, ' ');
     if (!this.available) return new Promise((r) => setTimeout(r, Math.min(9000, 600 + plain.length * 160)));
+    if (this.native) return this.native.speak(plain, this.rate);
     return new Promise((resolve) => {
       const u = new SpeechSynthesisUtterance(plain);
       u.voice = this.voice; u.lang = this.voice.lang; u.rate = this.rate; u.pitch = 1;

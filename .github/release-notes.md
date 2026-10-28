@@ -19,5 +19,6 @@
 - **Windows 11**：`XiaokeMahjong-版本-win-x64.exe`（安裝版，會建立桌面捷徑）或 `-portable.exe`（免安裝版）
 - **MacBook Pro（Apple 晶片 M1～M4）**：`XiaokeMahjong-版本-mac-arm64.dmg`
 - **Intel Mac**：`XiaokeMahjong-版本-mac-x64.dmg`
+- **Android 手機**：`XiaokeMahjong-版本-android.apk`（橫向畫面；第一次安裝要允許「安裝未知應用程式」，之後 App 內可一鍵更新）
 
 macOS 版未經 Apple 公證，第一次開啟請在 Finder 對程式按右鍵 →「打開」。

@@ -4,3 +4,7 @@ e2e/out/
 __pycache__/
 *.log
 dist-test/
+mobile/www/
+android/build/
+android/*.jks
+android/local.properties
