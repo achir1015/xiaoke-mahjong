@@ -24,9 +24,10 @@ https://github.com/user-attachments/assets/52ffd9d7-de1f-4143-a948-e881bc0d57fd
 | MacBook Pro（Apple 晶片） | `XiaokeMahjong-版本-mac-arm64.dmg` |
 | Intel Mac | `XiaokeMahjong-版本-mac-x64.dmg` |
 | Android 手機 | `XiaokeMahjong-版本-android.apk`（橫向畫面） |
-| iPhone／iPad Pro | 已完成並在 iPhone 15 Pro Max 實機測試，等 App Store 上架（上架前由開發者用 Xcode 安裝） |
+| iPad／iPhone | `xiaoke-mahjong-ios.ipa`：用 Safari 開 [安裝頁](https://achir1015.github.io/xiaoke-mahjong/ios/) 按「安裝」（App Store 上架前限開發者登記過的裝置） |
 
 - **iPhone／iPad 版**：`ios/`（XcodeGen 專案，WKWebView＋App 內本機伺服器，和 Android 版同一份遊戲程式）。在 Mac 上執行 `node scripts/build-mobile.mjs`（或從 Windows 產生後複製）→ `bash ios/sync.sh` → 用 Xcode 開 `ios/XiaokeMahjong.xcodeproj` 執行；也可用 `osascript ios/run-on-iphone.applescript <專案路徑>` 讓 Xcode 直接裝到接著的 iPhone。
+- **iPad／iPhone 的 .ipa**：在 Mac 的終端機執行 `bash ios/build-ipa.sh`（從 SSH 要用 `osascript ios/run-in-terminal.applescript "bash <路徑>/ios/build-ipa.sh"`，鑰匙圈才解得開），產出 Ad Hoc 簽章的 `ios/build/xiaoke-mahjong-ios.ipa`，上傳到 Release（檔名固定），再把 `docs/ios/manifest.plist` 的 `bundle-version` 改成新版號。新裝置要先登記：Mac 上執行 `python3 ios/udid-server.py`，iPad 用 Safari 開畫面上的網址、安裝描述檔就會顯示 UDID，到 [Apple Developer → Devices](https://developer.apple.com/account/resources/devices/add) 登記後重做 .ipa。
 
 ## 規則重點
 

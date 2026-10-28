@@ -1445,7 +1445,7 @@ async function checkUpdate(manual, statusEl) {
 
 async function startUpdate(info) {
   if (!info.canInstall) {
-    const v = await modal('下載新版本', h('p', {}, info.flavor === 'dev' ? '目前是開發版，請到 GitHub 下載安裝檔。' : info.flavor === 'ios' ? 'iPhone／iPad 版請到 App Store 更新（上架前由開發者用 Xcode 或 TestFlight 安裝新版）。' : '找不到這個平台的安裝檔，請到 GitHub 下載。'), [{ label: '取消', value: false }, { label: '開啟下載頁', value: true, primary: true }]);
+    const v = await modal('下載新版本', h('p', {}, info.flavor === 'dev' ? '目前是開發版，請到 GitHub 下載安裝檔。' : info.flavor === 'ios' ? (info.asset ? '會用 Safari 開啟安裝頁，按「安裝到這台 iPad／iPhone」即可更新（限開發者登記過的裝置）。' : 'iPhone／iPad 版請到 App Store 更新（上架前由開發者用 Xcode 或 TestFlight 安裝新版）。') : '找不到這個平台的安裝檔，請到 GitHub 下載。'), [{ label: '取消', value: false }, { label: '開啟下載頁', value: true, primary: true }]);
     if (v) xk.update.openPage();
     return;
   }

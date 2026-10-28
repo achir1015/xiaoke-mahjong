@@ -152,6 +152,7 @@
   // ---------------- 版本更新 ----------------
   var progressFns = [];
   var updInfo = null;
+  var IOS_INSTALL_PAGE = 'https://achir1015.github.io/xiaoke-mahjong/ios/';
   function cmpVer(a, b) {
     var pa = String(a).replace(/^v/, '').split('.').map(Number), pb = String(b).replace(/^v/, '').split('.').map(Number);
     for (var i = 0; i < 3; i++) { var d = (pa[i] || 0) - (pb[i] || 0); if (d) return d; }
@@ -175,7 +176,10 @@
       return r.json();
     }).then(function (j) {
       var latest = String(j.tag_name || '').replace(/^v/, '');
-      updInfo = { current: cur, latest: latest, newer: cmpVer(latest, cur) > 0, notes: String(j.body || '').slice(0, 4000), page: j.html_url, asset: null, flavor: isIOS ? 'ios' : 'web', canInstall: false };
+      // iPhone／iPad：Release 裡有 .ipa 就改開 GitHub Pages 的安裝頁（itms-services 線上安裝）
+      var ipa = isIOS && (j.assets || []).filter(function (a) { return /\.ipa$/i.test(a.name); })[0];
+      updInfo = { current: cur, latest: latest, newer: cmpVer(latest, cur) > 0, notes: String(j.body || '').slice(0, 4000), page: ipa ? IOS_INSTALL_PAGE : j.html_url,
+        asset: ipa ? { name: ipa.name, url: ipa.browser_download_url, size: ipa.size } : null, flavor: isIOS ? 'ios' : 'web', canInstall: false };
       return updInfo;
     });
   }

@@ -20,5 +20,6 @@
 - **MacBook Pro（Apple 晶片 M1～M4）**：`XiaokeMahjong-版本-mac-arm64.dmg`
 - **Intel Mac**：`XiaokeMahjong-版本-mac-x64.dmg`
 - **Android 手機**：`XiaokeMahjong-版本-android.apk`（橫向畫面；第一次安裝要允許「安裝未知應用程式」，之後 App 內可一鍵更新）
+- **iPad／iPhone**：`xiaoke-mahjong-ios.ipa`，用 Safari 開 https://achir1015.github.io/xiaoke-mahjong/ios/ 按「安裝」（App Store 上架前限開發者登記過的裝置；App 內「檢查更新」會帶到這一頁）
 
 macOS 版未經 Apple 公證，第一次開啟請在 Finder 對程式按右鍵 →「打開」。
